@@ -33,9 +33,9 @@ public class FileAccess {
             while ((strLine = brr.readLine()) != null) {
                 // Print the content on the console
                 strLine = strLine.substring(27);
-                rating = strLine.substring(0, 5);
+                rating = strLine.substring(0, 3);
                 title = strLine.substring(5);
-                brw.write(title + "||" + rating);
+                brw.write(title + "_" + rating);
                 brw.newLine();
             }
             //Close the input stream
@@ -50,28 +50,45 @@ public class FileAccess {
 
     public static String findMovie(String f, String find) {
         Reader in = null;
-        String result="";
+        String result = "";
         try {
             File file = new File(f);
             in = new InputStreamReader(new FileInputStream(file), "UTF-8");
             BufferedReader brr = new BufferedReader(in);
-            brr.skip(file.length() / 2);
-            brr.readLine();
-            result=brr.readLine();
-        }  catch (FileNotFoundException ex) {
+
+            while (true) {
+                result = brr.readLine();
+                if (result == null) {
+                    break;
+                }
+                if (result.matches("^" + find + ".*")) {
+                    break;
+                }
+            }
+        } catch (FileNotFoundException ex) {
             Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
-        }catch (IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally {
+        } finally {
             try {
                 in.close();
             } catch (IOException ex) {
                 Logger.getLogger(FileAccess.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-         return result;
+        return result;
+    }
+
+    public static boolean changeDirName(String path, String newName) {
+        File oldfile = new File(path);
+        File newfile = new File(newName);
+        return oldfile.renameTo(newfile);
+    }
+
+    public static boolean testDir(String dirName){
+        File dir = new File(dirName);
+        return dir.isDirectory();
     }
 }

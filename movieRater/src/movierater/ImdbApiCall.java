@@ -66,11 +66,13 @@ public class ImdbApiCall {
         }
 
         String data = getWebData(url);
+        if(data.contains("ERROR"))return null;
         try {
             JSONObject jo = new JSONObject(data);
             res = jo.getString("title").replaceAll(" ", ".")+"["+jo.getString("year")+"]_"+getRatings(jo.getString("imdburl"))+"_"+jo.getString("genres");
         } catch (JSONException ex) {
-            Logger.getLogger(ImdbApiCall.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex.getMessage());
+            return null;
         }
         return res;
     }
