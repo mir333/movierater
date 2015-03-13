@@ -1,0 +1,1 @@
+Java application for rating movies
